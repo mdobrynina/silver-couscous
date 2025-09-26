@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.canvas.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/17.0.06"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.tp_lr1.HelloController"
+            fx:id="rootPane">
+
+    <padding><Insets bottom="10" left="10" right="10" top="10" /></padding>
+
+    <HBox spacing="10" AnchorPane.leftAnchor="10" AnchorPane.rightAnchor="10" AnchorPane.topAnchor="10" alignment="CENTER_LEFT">
+        <Label text="Режим:" />
+        <ToggleButton fx:id="brushToggle" text="Кисть" selected="true"/>
+        <Label text="Фигура:" />
+        <ComboBox fx:id="shapeComboBox" prefWidth="120" />
+        <Label text="Цвет:" />
+        <ColorPicker fx:id="colorPicker" />
+        <Label text="Размер:" />
+        <Slider fx:id="sizeSlider" min="5" max="100" value="20" prefWidth="140" showTickLabels="true" showTickMarks="true"/>
+        <Button fx:id="clearButton" onAction="#handleClear" text="Очистить" />
+        <Button fx:id="eraserButton" onAction="#handleEraser" text="Ластик" />
+    </HBox>
+
+    <!-- Canvas привязан верх=70, низ=30 -->
+    <Canvas fx:id="mainCanvas"
+            AnchorPane.topAnchor="70.0"
+            AnchorPane.leftAnchor="10.0"
+            AnchorPane.rightAnchor="10.0"
+            AnchorPane.bottomAnchor="30.0" />
+
+    <!-- Координаты в левом нижнем углу -->
+    <Label fx:id="coordsLabel" text="X=0 Y=0"
+           AnchorPane.leftAnchor="10.0" AnchorPane.bottomAnchor="5.0"/>
+</AnchorPane>
