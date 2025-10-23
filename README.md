@@ -29,7 +29,7 @@
 
 1. Склонируйте репозиторий:
 
-git clone git@github.com:mdobrynina/silver-couscous.git
+git clone [git@github.com:mdobrynina/silver-couscous.git](https://github.com/mdobrynina/silver-couscous.git)
 
 2. Перейти в папку проекта
 После клонирования на компьютере появится папка silver-couscous. Перейдите в неё:  
