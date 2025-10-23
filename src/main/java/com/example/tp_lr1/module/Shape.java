@@ -5,7 +5,7 @@ import javafx.scene.paint.Color;
 
 public abstract class Shape {
     protected double x, y, size;
-    protected Color color;
+    public Color color;
 
     public Shape(double x, double y, double size, Color color) {
         this.x = x;
@@ -19,4 +19,7 @@ public abstract class Shape {
     public double getSize() { return size; }
 
     public abstract void draw(GraphicsContext gc);
+    public Color getColor() {
+        return color;
+    }
 }

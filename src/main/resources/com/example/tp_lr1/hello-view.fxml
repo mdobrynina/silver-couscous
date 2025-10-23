@@ -23,6 +23,8 @@
         <Slider fx:id="sizeSlider" min="5" max="100" value="20" prefWidth="140" showTickLabels="true" showTickMarks="true"/>
         <Button fx:id="clearButton" onAction="#handleClear" text="Очистить" />
         <Button fx:id="eraserButton" onAction="#handleEraser" text="Ластик" />
+        <Button fx:id="saveButton" onAction="#handleSave" text="Сохранить"/>
+        <Button fx:id="openButton" onAction="#handleOpen" text="Открыть"/>
     </HBox>
 
     <!-- Canvas привязан верх=70, низ=30 -->
