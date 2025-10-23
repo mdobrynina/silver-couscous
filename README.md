@@ -1,32 +1,37 @@
 # Имя проекта
-----------------
+# PaintFX
 
-**Описание**:  Поместите осмысленное, краткое и простое описание того, чего этот проект пытается достичь и почему это важно.
-Опишите проблемы, которые решает этот проект.
-Опишите, как это программное обеспечение может улучшить жизнь своей аудитории.
+**Описание**: Простое десктопное приложение для рисования геометрическими фигурами. Позволяет создавать графические композиции из кругов, квадратов и треугольников с различными цветами и размерами.
 
-  - **Технологический стек**: Indicate the technological nature of the software, including primary programming language(s) and whether the software is intended as standalone or as a module in a framework or other ecosystem.
-  - **Статус**:  Alpha, Beta, 1.1, etc. It's OK to write a sentence, too. The goal is to let interested people know where this project is at. This is also a good place to link to the [CHANGELOG](CHANGELOG.md).
-  - **Ссылка на продукт или демо-экземпляр**
-  - Describe what sets this apart from related-projects. Linking to another doc or page is OK if this can't be expressed in a sentence or two.
+Приложение решает задачу быстрого создания простых графических элементов без необходимости изучения сложных редакторов. Может использоваться для образовательных целей, создания схем и быстрых набросков.
 
+- **Технологический стек**: Java 17, JavaFX, Maven
+- **Статус**: Beta
+- **Отличительные особенности**: Простой интерфейс, работа с текстовыми файлами
 
-**Скриншот рабочего окна приложения**: If the software has visual components, place a screenshot after the description; e.g.,
+## Скриншот рабочего окна приложения
 
-![](https://raw.githubusercontent.com/cfpb/open-source-project-template/main/screenshot.png)
+![PaintFX](screenshot.png)
 
 ## Архитектура
-Поместите диаграмму компонентов/классов модели
-Укажите назначение пакетов scr, если это яно не слудете из названия
-![DAO1](https://user-images.githubusercontent.com/65451923/226867283-265ea649-35ed-474a-8164-62c315e95fb9.png)
+
+src/
+├── main/java/com/example/tp_lr1/
+│ ├── HelloApplication.java
+│ ├── HelloController.java
+│ ├── Shape.java
+│ ├── CircleShape.java
+│ ├── SquareShape.java
+│ └── TriangleShape.java
+└── resources/
+└── hello-view.fxml
 
 
 ## Зависимости
 
-Опишите все зависимости, которые должны быть установлены для работы этого программного обеспечения.
-Сюда входят языки программирования, базы данных или другие механизмы хранения, инструменты сборки, фреймворки и так далее.
-Если требуются определенные версии другого программного обеспечения или известно, что они не работают, сообщите об этом.
-
+- JDK 17+
+- JavaFX 17+
+- Maven 3.6+
 
 ## Установка
 
