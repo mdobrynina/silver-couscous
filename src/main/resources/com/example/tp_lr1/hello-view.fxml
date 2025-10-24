@@ -25,9 +25,10 @@
         <Button fx:id="eraserButton" onAction="#handleEraser" text="Ластик" />
         <Button fx:id="saveButton" onAction="#handleSave" text="Сохранить"/>
         <Button fx:id="openButton" onAction="#handleOpen" text="Открыть"/>
+
     </HBox>
 
-    <!-- Canvas привязан верх=70, низ=30 -->
+
     <Canvas fx:id="mainCanvas"
             AnchorPane.topAnchor="70.0"
             AnchorPane.leftAnchor="10.0"

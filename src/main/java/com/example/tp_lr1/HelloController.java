@@ -1,9 +1,6 @@
 package com.example.tp_lr1;
 
-import com.example.tp_lr1.module.CircleShape;
-import com.example.tp_lr1.module.Shape;
-import com.example.tp_lr1.module.SquareShape;
-import com.example.tp_lr1.module.TriangleShape;
+import com.example.tp_lr1.module.*;
 import javafx.application.Platform;
 import javafx.beans.binding.DoubleBinding;
 import javafx.fxml.FXML;
@@ -20,7 +17,6 @@ import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class HelloController implements Initializable {
@@ -38,6 +34,7 @@ public class HelloController implements Initializable {
 
     private GraphicsContext gc;
     private final List<Shape> shapes = new ArrayList<>();
+    private final List<Shape.ShapeMemento> shapeMementos = new ArrayList<>();
     private boolean isEraserMode = false;
 
     @Override
@@ -90,8 +87,6 @@ public class HelloController implements Initializable {
         if (brushToggle.isSelected()) {
             if (isEraserMode) addEraserDot(e.getX(), e.getY());
             else addBrushDot(e.getX(), e.getY());
-        } else {
-            // Можно добавить функционал для перетаскивания фигур если нужно
         }
     }
 
@@ -106,8 +101,7 @@ public class HelloController implements Initializable {
     private void addBrushDot(double x, double y) {
         double size = sizeSlider.getValue();
         Color color = colorPicker.getValue();
-
-        Shape shape = Shape.create(shapeComboBox.getValue(), x, y, size, colorPicker.getValue());
+        Shape shape = Shape.create(shapeComboBox.getValue(), x, y, size, color);
         shapes.add(shape);
         redrawCanvas();
     }
@@ -143,37 +137,21 @@ public class HelloController implements Initializable {
     private void handleSave() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Сохранить рисунок");
-        fileChooser.getExtensionFilters().add(
-                new FileChooser.ExtensionFilter("Text Files", "*.txt")
-        );
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text Files", "*.txt"));
         File file = fileChooser.showSaveDialog(rootPane.getScene().getWindow());
 
         if (file != null) {
             try (PrintWriter writer = new PrintWriter(new FileWriter(file))) {
-                // Устанавливаем локаль с точкой как разделителем
-                writer.println("// Drawing File - Use dot as decimal separator");
-                writer.println();
-
                 for (Shape shape : shapes) {
-                    String type;
-                    if (shape instanceof SquareShape) {
-                        type = "Square";
-                    } else if (shape instanceof TriangleShape) {
-                        type = "Triangle";
-                    } else if (shape instanceof CircleShape) {
-                        type = "Circle";
-                    } else {
-                        type = "Circle";
-                    }
-
-                    writer.println(type);
-                    writer.printf(Locale.US, "%.2f%n", shape.getX());
-                    writer.printf(Locale.US, "%.2f%n", shape.getY());
-                    writer.printf(Locale.US, "%.2f%n", shape.getSize());
-                    writer.printf(Locale.US, "%.6f%n", shape.getColor().getRed());
-                    writer.printf(Locale.US, "%.6f%n", shape.getColor().getGreen());
-                    writer.printf(Locale.US, "%.6f%n", shape.getColor().getBlue());
-                    writer.printf(Locale.US, "%.6f%n", shape.getColor().getOpacity());
+                    Shape.ShapeMemento memento = shape.createMemento();
+                    writer.println(memento.type);
+                    writer.printf("%.2f%n", memento.x);
+                    writer.printf("%.2f%n", memento.y);
+                    writer.printf("%.2f%n", memento.size);
+                    writer.printf("%.6f%n", memento.color.getRed());
+                    writer.printf("%.6f%n", memento.color.getGreen());
+                    writer.printf("%.6f%n", memento.color.getBlue());
+                    writer.printf("%.6f%n", memento.color.getOpacity());
                     writer.println();
                 }
                 showAlert("Успех", "Рисунок сохранен! Фигур: " + shapes.size());
@@ -187,9 +165,7 @@ public class HelloController implements Initializable {
     private void handleOpen() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Открыть рисунок");
-        fileChooser.getExtensionFilters().add(
-                new FileChooser.ExtensionFilter("Text Files", "*.txt")
-        );
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text Files", "*.txt"));
         File file = fileChooser.showOpenDialog(rootPane.getScene().getWindow());
 
         if (file != null) {
@@ -201,18 +177,7 @@ public class HelloController implements Initializable {
                     line = line.trim();
                     if (line.isEmpty()) continue;
 
-                    // Определяем тип фигуры
-                    String type;
-                    if (line.equals("Square") || line.equals("Квадрат")) {
-                        type = "Square";
-                    } else if (line.equals("Triangle") || line.equals("Треугольник")) {
-                        type = "Triangle";
-                    } else if (line.equals("Circle") || line.equals("Круг")) {
-                        type = "Circle";
-                    } else {
-                        continue;
-                    }
-
+                    String type = line;
                     double x = parseNumber(reader.readLine());
                     double y = parseNumber(reader.readLine());
                     double size = parseNumber(reader.readLine());
@@ -230,35 +195,15 @@ public class HelloController implements Initializable {
 
                 redrawCanvas();
                 showAlert("Успех", "Рисунок загружен! Фигур: " + shapes.size());
-            } catch (IOException e) {
-                showAlert("Ошибка", "Не удалось загрузить файл: " + e.getMessage());
             } catch (Exception e) {
-                showAlert("Ошибка", "Ошибка в данных: " + e.getMessage());
+                showAlert("Ошибка", "Ошибка: " + e.getMessage());
             }
         }
     }
 
     private double parseNumber(String text) {
         if (text == null) throw new RuntimeException("Пустая строка числа");
-        text = text.trim();
-        text = text.replace(',', '.');
-        return Double.parseDouble(text);
-    }
-
-    private double readDouble(BufferedReader reader, int lineNum) throws IOException {
-        String line = reader.readLine();
-        if (line == null) {
-            throw new IOException("Неожиданный конец файла на строке " + lineNum);
-        }
-        line = line.trim();
-        System.out.println("Строка " + lineNum + " (число): " + line); // Отладочный вывод
-        return Double.parseDouble(line);
-    }
-
-    private double readDouble(BufferedReader reader) throws IOException {
-        String line = reader.readLine();
-        if (line == null) throw new IOException("Неожиданный конец файла");
-        return Double.parseDouble(line.trim());
+        return Double.parseDouble(text.trim().replace(',', '.'));
     }
 
     private void showAlert(String title, String message) {
@@ -283,43 +228,6 @@ public class HelloController implements Initializable {
 
         for (Shape s : shapes) {
             s.draw(gc);
-        }
-    }
-
-    private static class ShapeData implements Serializable {
-        private static final long serialVersionUID = 1L;
-        private final String type;
-        private final double x, y, size;
-        private final double red, green, blue, alpha;
-
-        public ShapeData(Shape shape) {
-            this.x = shape.getX();
-            this.y = shape.getY();
-            this.size = shape.getSize();
-            this.red = shape.color.getRed();
-            this.green = shape.color.getGreen();
-            this.blue = shape.color.getBlue();
-            this.alpha = shape.color.getOpacity();
-
-            if (shape instanceof CircleShape) {
-                this.type = "CIRCLE";
-            } else if (shape instanceof SquareShape) {
-                this.type = "SQUARE";
-            } else if (shape instanceof TriangleShape) {
-                this.type = "TRIANGLE";
-            } else {
-                this.type = "CIRCLE";
-            }
-        }
-
-        public Shape toShape() {
-            Color color = new Color(red, green, blue, alpha);
-            switch (type) {
-                case "SQUARE": return new SquareShape(x, y, size, color);
-                case "TRIANGLE": return new TriangleShape(x, y, size, color);
-                case "CIRCLE":
-                default: return new CircleShape(x, y, size, color);
-            }
         }
     }
 }
