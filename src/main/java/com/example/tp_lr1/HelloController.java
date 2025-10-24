@@ -78,7 +78,7 @@ public class HelloController implements Initializable {
         } else {
             if (isEraserMode) removeShapeAt(e.getX(), e.getY());
             else {
-                Shape s = createShape(shapeComboBox.getValue(), e.getX(), e.getY(), sizeSlider.getValue(), colorPicker.getValue());
+                Shape s = Shape.create(shapeComboBox.getValue(), e.getX(), e.getY(), sizeSlider.getValue(), colorPicker.getValue());
                 shapes.add(s);
                 redrawCanvas();
             }
@@ -107,7 +107,7 @@ public class HelloController implements Initializable {
         double size = sizeSlider.getValue();
         Color color = colorPicker.getValue();
 
-        Shape shape = createShape(shapeComboBox.getValue(), x, y, size, color);
+        Shape shape = Shape.create(shapeComboBox.getValue(), x, y, size, colorPicker.getValue());
         shapes.add(shape);
         redrawCanvas();
     }
@@ -126,15 +126,6 @@ public class HelloController implements Initializable {
             return dist < shape.getSize();
         });
         redrawCanvas();
-    }
-
-    private Shape createShape(String shapeType, double x, double y, double size, Color color) {
-        switch (shapeType) {
-            case "Квадрат": return new SquareShape(x, y, size, color);
-            case "Треугольник": return new TriangleShape(x, y, size, color);
-            case "Круг":
-            default: return new CircleShape(x, y, size, color);
-        }
     }
 
     @FXML
@@ -222,7 +213,6 @@ public class HelloController implements Initializable {
                         continue;
                     }
 
-                    // Читаем остальные параметры с обработкой запятых
                     double x = parseNumber(reader.readLine());
                     double y = parseNumber(reader.readLine());
                     double size = parseNumber(reader.readLine());
@@ -232,10 +222,9 @@ public class HelloController implements Initializable {
                     double alpha = parseNumber(reader.readLine());
 
                     Color color = new Color(red, green, blue, alpha);
-                    Shape shape = createShape(type, x, y, size, color);
+                    Shape shape = Shape.create(type, x, y, size, color);
                     shapes.add(shape);
 
-                    // Пропускаем пустую строку если есть
                     reader.readLine();
                 }
 
@@ -249,11 +238,9 @@ public class HelloController implements Initializable {
         }
     }
 
-    // Метод для преобразования чисел с запятыми в точки
     private double parseNumber(String text) {
         if (text == null) throw new RuntimeException("Пустая строка числа");
         text = text.trim();
-        // Заменяем запятые на точки для корректного парсинга
         text = text.replace(',', '.');
         return Double.parseDouble(text);
     }
@@ -268,7 +255,6 @@ public class HelloController implements Initializable {
         return Double.parseDouble(line);
     }
 
-    // Вспомогательный метод для чтения double
     private double readDouble(BufferedReader reader) throws IOException {
         String line = reader.readLine();
         if (line == null) throw new IOException("Неожиданный конец файла");
@@ -300,7 +286,6 @@ public class HelloController implements Initializable {
         }
     }
 
-    // Внутренний класс для сериализации данных фигур
     private static class ShapeData implements Serializable {
         private static final long serialVersionUID = 1L;
         private final String type;
@@ -316,7 +301,6 @@ public class HelloController implements Initializable {
             this.blue = shape.color.getBlue();
             this.alpha = shape.color.getOpacity();
 
-            // Определяем тип фигуры
             if (shape instanceof CircleShape) {
                 this.type = "CIRCLE";
             } else if (shape instanceof SquareShape) {
